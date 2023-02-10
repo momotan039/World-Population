@@ -1,0 +1,38 @@
+Project Goal: 
+    I want to create a website to compare populations in different places
+--------------------------------------
+
+Project Design:
+-The Header : menu and search input
+-The Body of page:
+    --Section 1: Details of product , prices and ability to add to cart
+    --Section 2: Extentions and other related product that customers have purchased or viewed
+    --Section 3: Features , performance and specifications
+    --section 4: Ad that shows related products
+    --section 5: Highly rated brands
+    --section 6: Customer questions and answers
+    --section 7: Customer reviews
+
+-------------------------------------
+
+Project Time:
+
+-difficulty
+    -The Header : 2 hours
+    -The Body of page:
+        --Section 1: 1.5 hours
+        --Section 2: 45 minutes
+        --Section 3: 3 hours
+        --Section 4: 45 minutes
+        --Section 5: 30 minutes
+        --Section 6: 2 hours
+
+total estimated time:10 hours
+total time I have:24 hours
+
+-----------------------------------
+
+Project milestones:
+1- build a page section by section (from bottom to top)
+2- make it responsive
+3- 
