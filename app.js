@@ -7,28 +7,28 @@ const continents={
 }
 let continentChar;
 let selectedContinent;
-
-function loadChart(){
+let selectedCountry;
+let continent={}
+function loadChart(_data){
+    Chart.defaults.color = 'white'
+     Chart.defaults.font.weight='bold'
     const ctx = document.getElementById('myChart');
-  new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-      datasets: [{
-        label: '# of Votes',
-        data: [12, 19, 3, 5, 2, 3],
-        borderWidth: 1
-      }]
-    },
+    if(continentChar)
+    continentChar.destroy()
+    continentChar= new Chart(ctx, {
+    type: 'line',
+    data: _data,
     options: {
+        maintainAspectRatio: false,
       scales: {
         y: {
           beginAtZero: true
         }
       }
     }
-  });
+  })
 }
+
 async function getCountries(continent)
 {
     if(continents[continent])
@@ -39,6 +39,32 @@ async function getCountries(continent)
     continents[continent]=cont
     return cont
 }
+
+async function getCities(country)
+{
+    const _country=continent.find(c=>c.name===country)
+    
+    if(_country.cities)
+    return _country.cities
+
+
+    if(continent[country])
+    return continent[country]
+
+    const res=await fetch("https://countriesnow.space/api/v0.1/countries/population/cities/filter",{
+        method:'POST',
+        headers:{
+            'content-type':'application/json'
+        },
+        body:JSON.stringify({
+            country:country.toLowerCase()
+        })
+    })
+    const data=await res.json().then(res=>res.data)
+    _country.cities=data
+    return data
+}
+
 
 function handelContinentsButtons(){
     const continentsElem=document.querySelector(".continents")
@@ -51,46 +77,74 @@ function handelContinentsButtons(){
         btn.classList.add('selected')
         selectedContinent=btn
         const continentName=btn.innerText.toLowerCase()
-        const continent=await getCountries(continentName)
-        showContinentChar(continent)
-        console.log(continent);
+        continent=await getCountries(continentName)
+        showContinentChar()
     })
 }
-function showContinentChar(continent){
-    showcountriesButtons(continent)
-    const mainChar=document.querySelector('.continent-chart')
-     Chart.defaults.color = 'white'
-     Chart.defaults.font.weight='bold'
-    const ctx = document.getElementById('myChart');
-    if(continentChar)
-    continentChar.destroy()
-    continentChar= new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: continent.map(c=>c.name),
-      datasets: [{
-        label: 'Population',
-        data:  continent.map(c=>c.population),
-        borderWidth: 1
-      },
-      {
-        label: 'Number Of Neighbors',
-        data: continent.map(c=>c.borders?c.borders.length:0),
-        borderWidth: 1
-      }
-    ]
-    },
-    options: {
-        maintainAspectRatio: false,
-      scales: {
-        y: {
-          beginAtZero: true
-        }
-      }
-    }
-  })
+function handelCountriesButtons(){
+    const countriesElem=document.querySelector(".countries")
+    countriesElem.addEventListener('click',async ()=>{
+        const btn=event.target
+
+        if(btn===countriesElem)
+        return
+
+        if(selectedCountry)
+        selectedCountry.classList.remove('selected')
+        btn.classList.add('selected')
+        selectedCountry=btn
+
+        
+        const countryName=btn.innerText
+        const cities=await getCities(countryName)
+        const years=cities.map(c=>c.populationCounts.map(pc=>pc.year)[0])
+        console.log(years);
+
+        const data={
+            labels: cities.map(c=>c.city),
+            datasets: [
+                {
+              label: '2016',
+              data:[1,2,3],
+              borderWidth: 1
+            },
+                {
+              label: '2017',
+              data:[4,5,6],
+              borderWidth: 1
+            },
+                {
+              label: '2018',
+              data:[7,8,9],
+              borderWidth: 1
+            },
+          ]
+          }
+
+        loadChart(data)
+    })
 }
-function showcountriesButtons(continent){
+
+
+function showContinentChar(){
+    showcountriesButtons()
+    const data={
+        labels: continent.map(c=>c.name),
+        datasets: [{
+          label: 'Population',
+          data:  continent.map(c=>c.population),
+          borderWidth: 1
+        },
+        {
+          label: 'Number Of Neighbors',
+          data: continent.map(c=>c.borders?c.borders.length:0),
+          borderWidth: 1
+        }
+      ]
+      }
+    loadChart(data)
+}
+function showcountriesButtons(){
     const countries=document.querySelector('.countries')
     countries.innerHTML=""
     continent.map((country=>{
@@ -99,6 +153,7 @@ function showcountriesButtons(continent){
         button.classList.add('mybutton')
         countries.appendChild(button)
     }))
+    handelCountriesButtons()
 }
 function StartSite(){
     handelContinentsButtons()
