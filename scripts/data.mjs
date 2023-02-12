@@ -12,7 +12,7 @@ export function getPopulationByYear(year, cities) {
 export function getPopulationCityByYear(year, cities, city) {
     const c = cities.find(c => c.city === city)
     const population = c.population.find(p => p.year === year)
-    return population ? population.value : 0
+    return population ? Number(population.value).toLocaleString() : 0
 }
 
 export async function getCountries(continentName) {
@@ -55,6 +55,14 @@ export async function getCities(country) {
             country: country.toLowerCase()
         })
     })
+
+    if(!res.ok)
+    {
+        Controls.hideLoadingElement()
+        Controls.showContinentChartElement()
+        return undefined
+    }
+
     const data = await res.json().then(res => res.data)
     _country.cities = data
 

@@ -27,6 +27,10 @@ header{
     border-radius: 8px;
     cursor: pointer;
 }
+.mybutton:hover{
+    background-color: #b32e32;
+    color: white !important;
+}
 .mybutton.selected{
     background-color: #b32e32;
     color: white !important;
@@ -343,5 +347,18 @@ width: 80%;
 }
 .continent-chart .countries button.selected{
 
+}
+
+.continent-chart .error-message{
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    background: #0c978194;
+    padding: 26px;
+    max-width: 400px;
+    border-radius: 13px;
+    box-shadow: 0 0 20px 12px;
 }
 

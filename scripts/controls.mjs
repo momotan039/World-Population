@@ -9,6 +9,9 @@ export async function handelContinentsButtons() {
         if (btn === continentsElem)
             return
 
+            hideMessageCity404()
+            showChart()
+            
         if (Constances.selectedContinent)
         Constances.selectedContinent.classList.remove('selected')
 
@@ -23,6 +26,7 @@ export async function handelContinentsButtons() {
 
 
 export function handelCountriesButtons() {
+
     const countriesElem = document.querySelector(".countries")
     countriesElem.addEventListener('click', async () => {
         const btn = event.target
@@ -38,6 +42,16 @@ export function handelCountriesButtons() {
 
         const countryName = btn.innerText
         const cities = await Data.getCities(countryName)
+        if(!cities)
+        {
+            showMessageCity404()
+            hideChart()
+            Constances.chart_instance.destroy()
+            return
+         }
+
+         hideMessageCity404()
+         showChart()
         const _cities = cities.map(c => ({
             city: c.city,
             population: c.populationCounts.map(p => ({
@@ -67,9 +81,9 @@ export function handelCountriesButtons() {
                     label: function(context) {
                          return uniqeYears.map((year,i)=>{
                             if(year===context.dataset.label)
-                            return `* ${year} : ${getPopulationCityByYear(year,_cities,context.label)}`
+                            return `* ${year} : ${Data.getPopulationCityByYear(year,_cities,context.label)}`
                             else
-                            return `${year} : ${getPopulationCityByYear(year,_cities,context.label)}`
+                            return `${year} : ${Data.getPopulationCityByYear(year,_cities,context.label)}`
                         })
                         
                     },
@@ -78,7 +92,7 @@ export function handelCountriesButtons() {
             }
         }
         // every year must be appropriate dataset
-        loadChart(data,plugins)
+       Chart.loadChart(data,plugins)
     })
 }
 
@@ -114,6 +128,27 @@ export function showContinentChartElement(){
 export function hideContinentChartElement(){
     const continent_chart=document.querySelector('.continent-chart')
     continent_chart.classList.add('hidden')
+}
+
+export function showMessageCity404(){
+    const message=document.querySelector('.error-message')
+    message.classList.remove('hidden')
+}
+
+export function hideMessageCity404(){
+    const message=document.querySelector('.error-message')
+    message.classList.add('hidden')
+}
+
+
+export function showChart(){
+    const chart=document.getElementById('myChart')
+    chart.classList.remove('hidden')
+}
+
+export function hideChart(){
+    const chart=document.getElementById('myChart')
+    chart.classList.add('hidden')
 }
 
 export * as Controls from './controls.mjs'

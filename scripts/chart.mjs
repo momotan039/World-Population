@@ -8,7 +8,7 @@ export function loadChart(_data, _plugins = {}) {
     if (Constances.chart_instance)
     Constances.chart_instance.destroy()
     Constances.chart_instance = new Chart(ctx, {
-        type: 'bar',
+        type: 'line',
         data: _data,
         options: {
             maintainAspectRatio: false,
@@ -38,7 +38,7 @@ export function showContinentChar() {
             }
         ]
     }
-    loadChart(data)
+   loadChart(data)
 }
 
 export * as Chart from './chart.mjs'
